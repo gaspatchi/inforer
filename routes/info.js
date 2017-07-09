@@ -1,12 +1,51 @@
 import express from "express";
 import { Specialties, Teachers, Groups, Schedule, Lessons, Cabinets } from "../models/schedule";
-import { teachers_find, teachers_select, lessons_find, lessons_select, cabinet_find, cabinet_select } from "../lib/prometheus";
+import { groups_find, groups_select, teachers_find, teachers_select, lessons_find, lessons_select, cabinet_find, cabinet_select } from "../lib/prometheus";
 import _ from "lodash";
 import sequelize from "sequelize";
 import tarantool from "../lib/tarantool";
 import { JsonValidate } from "../middlewares/validate";
 
 let info_router = express.Router();
+
+info_router.post("/group/find", JsonValidate("search"), async (req, res) => {
+	try {
+		let groups = await Groups.findAll({
+			attributes: ["group_id", "group", "course"],
+			where: {
+				group: { $like: `%${req.body.query}%` }
+			}
+		});
+		if (groups.length === 0) {
+			res.status(404).json({ message: "Группа не найдена" });
+		} else {
+			groups_find.inc();
+			res.status(200).json({ "result": groups });
+		}
+	} catch (error) {
+		console.log({ type: "Error", module: "Info", section: "searchGroups", message: error.message, date: new Date().toJSON() });
+		res.status(500).json({ message: "Невозможно произвести поиск" });
+	}
+});
+
+info_router.get("/group/:group", async (req, res) => {
+	try {
+		let group = await Groups.findOne({
+			attributes: ["group_id", "group", "course"],
+			where: { group_id: req.params.group }, include: [
+				{ model: Teachers, as: "teacher", attributes: ["teacher_id", "firstname", "lastname", "patronymic"] },
+				{ model: Specialties, as: "speciality", attributes: ["speciality"]}]});
+		if (group === null) {
+			res.status(404).json({ message: "Группа не найдена" });
+		} else {
+			groups_select.inc();
+			res.status(200).json({ "result": group });
+		}
+	} catch (error) {
+		console.log({ type: "Error", module: "Info", section: "selectGroup", message: error.message, date: new Date().toJSON() });
+		res.status(500).json({ message: "Невозможно получить страницу группы" });
+	}
+});
 
 info_router.post("/teacher/find", JsonValidate("search"), async (req, res) => {
 	try {

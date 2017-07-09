@@ -4,6 +4,51 @@
 
 
 ----------
+- `POST` /group/find - Поиск группы
+- `Request`
+```
+{
+	"query": "..."
+}
+```
+- `Response`
+```
+{
+    "result": [
+        {
+            "group_id": 1,
+            "group": "311",
+            "course": null
+        },
+        {
+            "group_id": 2,
+            "group": "321",
+            "course": 2
+        }
+    ]
+}
+```
+- `GET` /group/{group_id} - Получение информации о группе
+- `Response`
+```
+{
+    "result": {
+        "group_id": 2,
+        "group": "321",
+        "course": 2,
+        "teacher": {
+            "teacher_id": 2,
+            "firstname": "...",
+            "lastname": "...",
+            "patronymic": "..."
+        },
+        "speciality": {
+            "speciality": "..."
+        }
+    }
+}
+```
+
 - `POST` /lesson/find - Поиск пары
 - `Request`
 ```
