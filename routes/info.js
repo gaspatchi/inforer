@@ -39,7 +39,7 @@ info_router.get("/group/:group", async (req, res) => {
 			res.status(404).json({ message: "Группа не найдена" });
 		} else {
 			groups_select.inc();
-			res.status(200).json({ "result": group });
+			res.status(200).json({ "result": { "group": group }});
 		}
 	} catch (error) {
 		console.log({ type: "Error", module: "Info", section: "selectGroup", message: error.message, date: new Date().toJSON() });

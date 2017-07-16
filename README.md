@@ -32,20 +32,22 @@
 - `Response`
 ```
 {
-    "result": {
-        "group_id": 2,
-        "group": "321",
-        "course": 2,
-        "teacher": {
-            "teacher_id": 2,
-            "firstname": "...",
-            "lastname": "...",
-            "patronymic": "..."
-        },
-        "speciality": {
-            "speciality": "..."
-        }
+  "result": {
+    "group": {
+      "group_id": 2,
+      "group": "321",
+      "course": 2,
+      "teacher": {
+        "teacher_id": 2,
+        "firstname": "...",
+        "lastname": "...",
+        "patronymic": "..."
+      },
+      "speciality": {
+        "speciality": "..."
+      }
     }
+  }
 }
 ```
 
