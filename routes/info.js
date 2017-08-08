@@ -13,8 +13,8 @@ info_router.post("/group/find", JsonValidate("search"), async (req, res) => {
 		let groups = await Groups.findAll({
 			attributes: ["group_id", "group", "course"],
 			where: {
-				group: { $like: `%${req.body.query}%` }
-			}
+				group: { $iLike: `%${req.body.query}%` }
+			}, include: [{ model: Specialties, as: "speciality", attributes: ["speciality"] }]
 		});
 		if (groups.length === 0) {
 			res.status(404).json({ message: "Группа не найдена" });
@@ -34,12 +34,13 @@ info_router.get("/group/:group", async (req, res) => {
 			attributes: ["group_id", "group", "course"],
 			where: { group_id: req.params.group }, include: [
 				{ model: Teachers, as: "teacher", attributes: ["teacher_id", "firstname", "lastname", "patronymic"] },
-				{ model: Specialties, as: "speciality", attributes: ["speciality"]}]});
+				{ model: Specialties, as: "speciality", attributes: ["speciality"] }]
+		});
 		if (group === null) {
 			res.status(404).json({ message: "Группа не найдена" });
 		} else {
 			groups_select.inc();
-			res.status(200).json({ "result": { "group": group }});
+			res.status(200).json({ "result": { "group": group } });
 		}
 	} catch (error) {
 		console.log({ type: "Error", module: "Info", section: "selectGroup", message: error.message, date: new Date().toJSON() });
@@ -53,9 +54,9 @@ info_router.post("/teacher/find", JsonValidate("search"), async (req, res) => {
 			attributes: ["teacher_id", "firstname", "lastname", "patronymic"],
 			where: {
 				$or: [
-					{ firstname: { $like: `%${req.body.query}%` } },
-					{ lastname: { $like: `%${req.body.query}%` } },
-					{ patronymic: { $like: `%${req.body.query}%` } }
+					{ firstname: { $iLike: `%${req.body.query}%` } },
+					{ lastname: { $iLike: `%${req.body.query}%` } },
+					{ patronymic: { $iLike: `%${req.body.query}%` } }
 				]
 			}
 		});
@@ -105,12 +106,12 @@ info_router.get("/teacher/:teacher", async (req, res) => {
 					}]
 			});
 			if (lessons.length !== 0) {
-				result.lessons = lessons;
+				result.lessons = _.uniqBy(lessons, "lesson.lesson_id");
 			} else {
 				result.lessons = null;
 			}
 			if (groups.length !== 0) {
-				result.groups = groups;
+				result.groups = _.uniqBy(groups, "group.group_id");
 			} else {
 				result.groups = null;
 			}
@@ -130,8 +131,8 @@ info_router.post("/lesson/find", JsonValidate("search"), async (req, res) => {
 			attributes: ["lesson_id", "lesson"],
 			where: {
 				$or: [
-					{ lesson: { $like: `%${req.body.query}%` } },
-					{ shortname: { $like: `%${req.body.query}%` } }
+					{ lesson: { $iLike: `%${req.body.query}%` } },
+					{ shortname: { $iLike: `%${req.body.query}%` } }
 				]
 			}
 		});
@@ -197,7 +198,7 @@ info_router.post("/cabinet/find", JsonValidate("search"), async (req, res) => {
 		let cabinets = await Cabinets.findAll({
 			attributes: ["cabinet_id", "cabinet"],
 			where: {
-				cabinet: { $like: `%${req.body.query}%` }
+				cabinet: { $iLike: `%${req.body.query}%` }
 			}
 		});
 		if (cabinets.length === 0) {

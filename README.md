@@ -18,12 +18,18 @@
         {
             "group_id": 1,
             "group": "311",
-            "course": null
+            "course": null,
+            "speciality": {
+				"speciality": "..."
+            }
         },
         {
             "group_id": 2,
             "group": "321",
-            "course": 2
+            "course": 2,
+            "speciality": {
+				"speciality": "..."
+            }
         }
     ]
 }
