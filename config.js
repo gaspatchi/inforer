@@ -2,7 +2,7 @@ let config = {
 	server: {
 		name: "inforer",
 		address: "127.0.0.1",
-		port: 8088
+		port: 8011
 	},
 	consul: {
 		address: "127.0.0.1",

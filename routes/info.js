@@ -249,6 +249,7 @@ info_router.get("/cabinet/:cabinet", async (req, res) => {
 			res.status(200).json({ "result": result });
 		}
 	} catch (error) {
+		console.log(error);
 		console.log({ type: "Error", module: "Info", section: "selectCabinet", message: error.message, date: new Date().toJSON() });
 		res.status(500).json({ message: "Невозможно получить страницу кабинета" });
 	}
